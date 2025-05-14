@@ -1,6 +1,7 @@
 import React from 'react'
-import {victory} from "../assets/victory.png"
-import {background} from "../assets/login2.png"
+import victory from "@/assets/victory.svg"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+// import {background} from "../../assets/login2.png"
 
 const Auth = () => {
   return (
@@ -13,6 +14,19 @@ const Auth = () => {
                 <h1 className='text-5xl font-bold md:text-6xl'>Welocome</h1>
                 <img src={victory} alt="victory" className='h-[100px]' />
             </div>
+            <p className='font-medium text-center'>
+                Fill in the details to get started with the best chat app
+            </p>
+            </div>
+            <div className='flex items-center justify-centerw-full'>
+              <Tabs>
+                <TabsList>
+                  <TabsTrigger value="login" className="data-[state=active]:bg-transparent text-black text-capicty-90 border-b-2 rounded-name w-full data-[state=active]:text-black data-[state=active]:font-semibold data-[state=active]:border-b-purple-500 p-3 transition-all">
+                  Login</TabsTrigger>
+                  <TabsTrigger value="SignUp" className="w-[50%]">
+                  SignUp</TabsTrigger>
+                </TabsList>
+              </Tabs>
             </div>
         </div>
     </div>
