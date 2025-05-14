@@ -1,9 +1,15 @@
-import React from 'react'
+import React,{useState} from 'react'
 import victory from "@/assets/victory.svg"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
 // import {background} from "../../assets/login2.png"
 
 const Auth = () => {
+
+const[email,setEmail]= useState("")
+const[password,setPassword]= useState("")
+const[confirmPassword,setConfirmPassword]= useState("")
+
   return (
     <>
     <div className='h-[100vh] w-[100vw] flex items-center justify-center'>
@@ -19,13 +25,15 @@ const Auth = () => {
             </p>
             </div>
             <div className='flex items-center justify-centerw-full'>
-              <Tabs>
-                <TabsList>
-                  <TabsTrigger value="login" className="data-[state=active]:bg-transparent text-black text-capicty-90 border-b-2 rounded-name w-full data-[state=active]:text-black data-[state=active]:font-semibold data-[state=active]:border-b-purple-500 p-3 transition-all">
+              <Tabs className="w-3/4">
+                <TabsList className="bg-transparentn rounded-none w-full">
+                  <TabsTrigger value="login" className="data-[state=active]:bg-transparent text-black text-capicty-90 border-b-2 rounded-none w-full data-[state=active]:text-black data-[state=active]:font-semibold data-[state=active]:border-b-purple-500 p-3 transition-all duration-300">
                   Login</TabsTrigger>
-                  <TabsTrigger value="SignUp" className="w-[50%]">
+                  <TabsTrigger value="signUp" className="data-[state=active]:bg-transparent text-black text-capicty-90 border-b-2 rounded-none w-full data-[state=active]:text-black data-[state=active]:font-semibold data-[state=active]:border-b-purple-500 p-3 transition-all duration-300">
                   SignUp</TabsTrigger>
                 </TabsList>
+                <TabsContent className="" value="login"></TabsContent>
+                <TabsContent className="" value="signup"></TabsContent>
               </Tabs>
             </div>
         </div>
