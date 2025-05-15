@@ -107,7 +107,6 @@ const Auth = () => {
           </Tabs>
         </div>
 
-        {/* Right Panel (Optional: illustration, branding, etc.) */}
         <div className="hidden xl:flex bg-purple-300 items-center justify-center p-10">
           <img src={c3} alt="victory-illustration" className="h-100 rounded-2xl" />
         </div>
