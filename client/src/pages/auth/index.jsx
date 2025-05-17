@@ -3,19 +3,56 @@ import victory from "@/assets/victory.svg";
 import c3 from "@/assets/c3.png";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { apiClient } from '@/lib/api-client';
+import { SIGNUP_ROUTE,LOGIN_ROUTE } from '@/utils/constants';
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      alert("Please fill in all fields");
-      return;
+    const validateLogin = () => {
+    if(!email.length){
+      toast.error("Email is required");
+      return false;
     }
-    console.log("Login", { email, password });
+    if(!password.length){
+      toast.error("Password is required");
+      return false;
+    }
+    return true;
+  };
+
+  const validateSignup = () => {
+    if(!email.length){
+      toast.error("Email is required");
+      return false;
+    }
+    if(!password.length){
+      toast.error("Password is required");
+      return false;
+    }
+    if(!confirmPassword.length){
+      toast.error("Confirm Password is required");
+      return false;
+    } 
+    return true;
+  };
+
+  const handleLogin = (e) => {
+    if(validateLogin()){
+      const response = apiClient.post(LOGIN_ROUTE,{email,password},{withCredentials:true});
+      console.log(response);
+    }
+  };
+
+  const handleSignup = async () =>{
+    if(validateSignup()){
+      const response = await apiClient.post(SIGNUP_ROUTE,{email,password},{withCredentials:true});
+      console.log(response);
+    }
+ 
   };
 
   const handleSubmit = (e) => {
@@ -102,7 +139,7 @@ const Auth = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              <Button className="rounded-full p-4" onClick={handleSubmit}>SignUp</Button>
+              <Button className="rounded-full p-4" onClick={handleSignup}>SignUp</Button>
             </TabsContent>
           </Tabs>
         </div>

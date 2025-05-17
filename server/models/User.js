@@ -19,14 +19,15 @@ const User = new mongoose.Schema({
     type: String,
     required: true,
   },
-   image: {
-    type: String,
-    required: "false",
-    },
-    color: {
-      type: Number,
-      required: "false",
-    },
+  image: {
+  type: String,
+  required: false,  // ✅ Correct
+   },
+   color: {
+    type: Number,
+    required: false,  // ✅ Correct
+  },
+
     profileSetup: {
       type: Boolean,
       default: false,
