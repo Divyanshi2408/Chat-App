@@ -1,5 +1,7 @@
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
+import { compare } from 'bcryptjs';
+
 
 const raxAge = 3 * 24 * 60 * 60 * 1000; // 1 day
 
@@ -64,7 +66,7 @@ export const login = async (req, res, next) => {
         });
 
         return res.status(201).json({
-            message: 'User created successfully',
+            message: 'User logged in successfully',
             user: {
                 id: user._id,
                 email: user.email,
