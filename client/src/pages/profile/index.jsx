@@ -37,7 +37,7 @@ const Profile = () => {
           className='w-full h-full object-cover bg-black'
           />
         ) : (
-          <div className={'uppercase h-32 w-32 md:w-48 text-5xl border-[1px] flex item-center justify-center rounded-full ${getColor(selectedColor)}'}>
+          <div className={`uppercase h-32 w-32 md:w-48 text-5xl border-[1px] flex items-center justify-center rounded-full ${getColor(selectedColor)}`}>
          
           {firstName
           ? firstName.split("").shift()
@@ -48,28 +48,19 @@ const Profile = () => {
       }
      </Avatar>
      {hovered && (
-      <div className='absolute insert-8 flex items-center justify-center bg-black/50 '>
-        <label htmlFor="file-upload" className='cursor-pointer'>
-          <FaPlus className='text-white text-2xl'/>
-        </label>
-        <input
-          type="file"
-          id="file-upload"
-          accept="image/*"
-          onChange={(e) => {
-            const file = e.target.files[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onloadend = () => {
-                setImage(reader.result);
-              };
-              reader.readAsDataURL(file);
-            }
-          }}
-          className='hidden'
-        />
+      <div className='absolute inset-8 flex items-center justify-center bg-black/50 ring-fuchsia-50 rounded-full'>
+       {image ? (<FaTrash className='text-white text-3xl cursor-pointer'/>
+       ) : (
+       <FaPlus className='text-white text-3xl cursor-pointer'/>)}
       </div>
      )}
+    </div>
+    <div className='flex min-w-32 md:min-w-54 flex-col gap-5 text-white items-center justify-center'>
+      <div className='w-full'>
+        <input placeholder='Email'
+        type='email' disabled value={userInfo.email} className='rounded-lg p-6 bg-[#2c2e3b] border-none'
+        ></input>
+      </div>
     </div>
     </div>
     </div>
