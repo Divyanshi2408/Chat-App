@@ -13,7 +13,7 @@ const MONGO_URI = process.env.MONGO_URI;
 app.use(cors({
   origin: process.env.Origin,
   methods: ['GET', 'POST', 'PUT','PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Credentials'],
   credentials: true,
 }));
 
