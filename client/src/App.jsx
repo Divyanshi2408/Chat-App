@@ -29,35 +29,34 @@ const setUserInfo = useAppStore(state => state.setUserInfo);
 
   const [loading,setLoading] = useState(true);
 
-  useEffect(() => {
-    const getUserData = async () => {
-      try{
-        const response = await apiClient.get(GET_USER_INFO, { withCredentials: true });
-        if(!response.status === 200 && response.data.id){
-          setUserInfo(response.data);
-        }
-        else {
-          setUserInfo(undefined);
-        }
-        console.log(response)
+ useEffect(() => {
+  const getUserData = async () => {
+    try {
+      const response = await apiClient.get(GET_USER_INFO, { withCredentials: true });
+      
+      if (response.status === 200 && response.data.id) {
+        setUserInfo(response.data);
+      } else {
+        setUserInfo(undefined);
       }
-        catch (error) {
-          setUserInfo(undefined);
-        }
-      finally {
-        setLoading(false);
-      }
-      };
-    if (!userInfo) {
-      getUserData();
-    }
-    else {
+    } catch (error) {
+      setUserInfo(undefined);
+    } finally {
       setLoading(false);
     }
-  },  [userInfo, setUserInfo]);
-  if (loading) {
-    return <div>Loading...</div>;
+  };
+
+  if (!userInfo) {
+    getUserData();
+  } else {
+    setLoading(false);
   }
+}, [userInfo, setUserInfo]);
+
+
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
   return (
    <BrowserRouter>
       <Routes>
