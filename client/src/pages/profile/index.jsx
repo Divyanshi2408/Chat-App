@@ -87,9 +87,12 @@ const handleFileInputClick = () =>{
     const formData = new FormData();
     formData.append('profile-image', file);
     try {
-      const response = await apiClient.post(ADD_PROFILE_IMAGE_ROUTE, formData, {
-        withCredentials: true,
-      });
+      const response =await apiClient.post(ADD_PROFILE_IMAGE_ROUTE, formData, {
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+});
       if (response.status === 200 && response.data.image) {
         setUserInfo({ ...userInfo, image: response.data.image });
         toast.success("Profile image updated successfully");

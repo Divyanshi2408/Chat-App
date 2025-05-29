@@ -5,11 +5,17 @@ import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/AuthRoutes.js';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(cookieParser());
+app.use(express.json());
 
 app.use(cors({
   origin: process.env.Origin,
@@ -17,11 +23,11 @@ app.use(cors({
 allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Credentials'],
   credentials: true,
 }));
-app.use("uploads/profile", express.static("uploads/profile"));
 
 
-app.use(cookieParser());
-app.use(express.json());
+// Serve static files
+app.use('/uploads/profile', express.static(path.join(__dirname, 'uploads/profile')));
+
 
 app.use("/api/auth", authRoutes);
 

@@ -163,7 +163,7 @@ export const addProfileImage = async (req, res, next) => {
             return res.status(400).json({ message: 'Image file is required' });
         }
         const date =Date.now();
-        let fileName = "uplaod/profile" + date + req.file.originalname;
+        let fileName = "upload/profile" + date + req.file.originalname;
         renameSync(req.file.path, fileName);
 
         const updateUser = await User.findByIdAndUpdate(
