@@ -16,6 +16,7 @@ app.use(cors({
 allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Credentials'],
   credentials: true,
 }));
+app.use("uploads/profile", express.static("uploads/profile"));
 
 
 app.use(cookieParser());

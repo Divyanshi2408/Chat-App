@@ -2,7 +2,6 @@ import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import { compare } from 'bcryptjs';
 
-
 const raxAge = 3 * 24 * 60 * 60 * 1000; // 1 day
 
 const createToken = (email, userId) => {
@@ -112,16 +111,13 @@ export const getUserInfo = async (req, res, next) => {
 
 export const updateProfile = async (req, res, next) => {
   try {
-    // Ensure you have middleware that sets req.userId correctly before this
     const { userId } = req;
     const { firstName, lastName, color } = req.body;
 
-    // Validate required fields
     if (!firstName || !lastName ) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
-    // Update the user in the DB
     const userData = await User.findByIdAndUpdate(
       userId,
       {
@@ -131,17 +127,15 @@ export const updateProfile = async (req, res, next) => {
         profileSetup: true,
       },
       {
-        new: true, // return updated document
+        new: true,
         runValidators: true,
       }
     );
 
-    // Check if user was not found
     if (!userData) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Send updated user info
     return res.status(200).json({
       message: 'Profile updated successfully',
       user: {
@@ -159,3 +153,68 @@ export const updateProfile = async (req, res, next) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+import path from 'path';
+import fs, { unlink } from 'fs';
+
+export const addProfileImage = async (req, res, next) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'Image file is required' });
+        }
+
+        const date = Date.now();
+        const uploadDir = 'upload/profile/';
+        const fileExt = path.extname(req.file.originalname);
+        const fileName = `${uploadDir}${date}-${req.file.originalname}`;
+        
+        // Ensure the upload directory exists
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
+        fs.renameSync(req.file.path, fileName);
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.userId,
+            { image: fileName },
+            { new: true, runValidators: true }
+        );
+
+        return res.status(200).json({
+            image: updatedUser.image,
+        });
+
+    } catch (error) {
+        console.error('Add profile image error:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+export const removeProfileImage = async (req, res, next) => {
+    try {
+        const { userId } = req;
+        const user = await User.findById(userId);
+
+        if(!user){
+            return res.status(400).json({ message: 'User ID is required' });
+        }
+
+        if (user.image) {
+            unlinkSync(user.image);
+        }
+
+        user.image = null;
+        await user.save();
+        return res.status(200).json({
+            message: 'Profile image removed successfully',
+        
+        });
+
+    } catch (error) {
+        console.error('Remove profile image error:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
