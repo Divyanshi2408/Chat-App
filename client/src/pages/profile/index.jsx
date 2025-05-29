@@ -97,9 +97,15 @@ const handleFileInputClick = () =>{
         toast.error("Failed to upload image");
       }
     } catch (error) {
-      console.error("Image upload error:", error);
-      toast.error("An error occurred while uploading image");
-    }
+  console.error("Image upload error:", error);
+  if (error.response) {
+    console.error("Response data:", error.response.data);
+    console.error("Status:", error.response.status);
+    console.error("Headers:", error.response.headers);
+  }
+  toast.error("An error occurred while uploading image");
+}
+
   }
 };
 

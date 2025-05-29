@@ -2,28 +2,27 @@ import { Router } from 'express';
 import multer from 'multer';
 import { signup, login, getUserInfo, updateProfile, addProfileImage, removeProfileImage } from '../controllers/AuthController.js';
 import { verifyToken } from '../middlewares/AuthMiddleware.js';
-import path from 'path';
-import fs from 'fs';
+// import path from 'path';
+// import fs from 'fs';
 
 const authRoutes = Router();
+const upload = multer({ dest: 'uploads/profile/' }); 
 
-// Create upload directory if not exists
-const uploadDir = 'upload/profile';
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+// const uploadDir = 'upload/profile';
+// if (!fs.existsSync(uploadDir)) {
+//   fs.mkdirSync(uploadDir, { recursive: true });
+// }
 
-// Configure multer
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + file.originalname;
-    cb(null, uniqueSuffix);
-  }
-});
-const upload = multer({ storage });
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, uploadDir);
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + '-' + file.originalname;
+//     cb(null, uniqueSuffix);
+//   }
+// });
+// const upload = multer({ storage });
 
 // Routes
 authRoutes.post('/signup', signup);
@@ -34,7 +33,7 @@ authRoutes.put('/update-profile', verifyToken, updateProfile);
 authRoutes.post(
   '/add-profile-image',
   verifyToken,
-  upload.single('profile-image'), // Now this works
+  upload.single('profile-image'),
   addProfileImage
 );
 

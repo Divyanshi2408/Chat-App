@@ -1,6 +1,9 @@
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import { compare } from 'bcryptjs';
+import path from 'path';
+import fs, { renameSync,unlink } from 'fs';
+
 
 const raxAge = 3 * 24 * 60 * 60 * 1000; // 1 day
 
@@ -154,35 +157,23 @@ export const updateProfile = async (req, res, next) => {
   }
 };
 
-import path from 'path';
-import fs, { unlink } from 'fs';
-
 export const addProfileImage = async (req, res, next) => {
     try {
-        if (!req.file) {
+       if(!req.file) {
             return res.status(400).json({ message: 'Image file is required' });
         }
+        const date =Date.now();
+        let fileName = "uplaod/profile" + date + req.file.originalname;
+        renameSync(req.file.path, fileName);
 
-        const date = Date.now();
-        const uploadDir = 'upload/profile/';
-        const fileExt = path.extname(req.file.originalname);
-        const fileName = `${uploadDir}${date}-${req.file.originalname}`;
-        
-        // Ensure the upload directory exists
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
-        }
-
-        fs.renameSync(req.file.path, fileName);
-
-        const updatedUser = await User.findByIdAndUpdate(
+        const updateUser = await User.findByIdAndUpdate(
             req.userId,
             { image: fileName },
             { new: true, runValidators: true }
         );
 
         return res.status(200).json({
-            image: updatedUser.image,
+           image:updateUser.image,    
         });
 
     } catch (error) {
