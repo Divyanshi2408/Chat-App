@@ -1,9 +1,8 @@
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import { compare } from 'bcryptjs';
+import { compare,hash } from 'bcryptjs';
 import path from 'path';
-import fs, { renameSync,unlinkSync } from 'fs';
+import fs, { renameSync,unlinkSync,existsSync } from 'fs';
 
 
 const raxAge = 3 * 24 * 60 * 60 * 1000; // 1 day
@@ -21,10 +20,7 @@ export const signup = async (req, res, next) => {
             return res.status(400).json({ message: 'Email and password are required' });
         }
 
-        // Hash the password before storing
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const user = await User.create({ email, password: hashedPassword });
+        const user = await User.create({ email, password });
 
         res.cookie('jwt', createToken(email, user._id), {
             httpOnly: true,
@@ -48,7 +44,6 @@ export const signup = async (req, res, next) => {
     }
 };
 
-
 export const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
@@ -60,16 +55,10 @@ export const login = async (req, res, next) => {
         if (!user) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
-        
-        console.log("Password attempt:", password);
-        console.log("Hashed password:", user.password);
-
-        const auth = await compare(password, user.password);
-        console.log("Password match:", auth);
+        const auth = await compare(password,user.password);
         if (!auth) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
-
 
         res.cookie('jwt', createToken(email, user._id), {
             httpOnly: true,
@@ -77,8 +66,6 @@ export const login = async (req, res, next) => {
             secure: true,
             sameSite: "None",
         });
-        console.log("Password attempt:", password);
-        console.log("Hashed password:", user.password);
 
         return res.status(201).json({
             message: 'User logged in successfully',
@@ -201,11 +188,11 @@ export const removeProfileImage = async (req, res, next) => {
         const { userId } = req;
         const user = await User.findById(userId);
 
-        if(!user){
-            return res.status(400).json({ message: 'User ID is required' });
+        if (!user) {
+            return res.status(400).json({ message: 'User not found' });
         }
 
-        if (user.image) {
+        if (user.image && existsSync(user.image)) {
             unlinkSync(user.image);
         }
 
@@ -213,7 +200,6 @@ export const removeProfileImage = async (req, res, next) => {
         await user.save();
         return res.status(200).json({
             message: 'Profile image removed successfully',
-        
         });
 
     } catch (error) {
@@ -221,4 +207,3 @@ export const removeProfileImage = async (req, res, next) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
-
