@@ -16,7 +16,7 @@ const Profile = () => {
  const [lastName, setLastName] = useState(userInfo.lastName || '');
  const [image, setImage] = useState(userInfo.image || '');
  const fileInputRef = useRef(null);
-
+const HOST ='http://localhost:5000'; 
   const [hovered, setHovered] = useState(false);
   const [selectedColor, setSelectedColor] = useState(userInfo.color ?? 0);
 
@@ -26,10 +26,11 @@ const Profile = () => {
       setLastName(userInfo.lastName || '');
       setSelectedColor(userInfo.color ?? 0);
     }
+    if (userInfo.image) {
+      const imagePath = userInfo.image ? `${HOST}/${userInfo.image}` : null;
+    }
    }, [userInfo]);
-   useEffect(() => {
-  setImage(userInfo.image || '');
-}, [userInfo.image]);
+
 
 ``
    const validateProfile = () => {
@@ -150,6 +151,7 @@ const handleFileInputClick = () =>{
                 <AvatarImage
                   src={image}
                   alt="Avatar"
+                  onError={() => setImage(null)}
                   className="w-full h-full object-cover bg-black"
                 />
               ) : (

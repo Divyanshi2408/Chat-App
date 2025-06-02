@@ -21,11 +21,11 @@ const User = new mongoose.Schema({
   },
   image: {
   type: String,
-  required: false,  // ✅ Correct
+  default: null 
    },
    color: {
     type: Number,
-    required: false,  // ✅ Correct
+    required: false,  
   },
 
     profileSetup: {

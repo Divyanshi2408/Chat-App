@@ -23,6 +23,7 @@
     "socket.io": "^4.8.1"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "mongodb": "^6.16.0",
     "multer": "^2.0.0"

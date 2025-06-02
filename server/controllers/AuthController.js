@@ -1,8 +1,9 @@
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import { compare } from 'bcryptjs';
 import path from 'path';
-import fs, { renameSync,unlink } from 'fs';
+import fs, { renameSync,unlinkSync } from 'fs';
 
 
 const raxAge = 3 * 24 * 60 * 60 * 1000; // 1 day
@@ -20,7 +21,10 @@ export const signup = async (req, res, next) => {
             return res.status(400).json({ message: 'Email and password are required' });
         }
 
-        const user = await User.create({ email, password });
+        // Hash the password before storing
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const user = await User.create({ email, password: hashedPassword });
 
         res.cookie('jwt', createToken(email, user._id), {
             httpOnly: true,
@@ -44,6 +48,7 @@ export const signup = async (req, res, next) => {
     }
 };
 
+
 export const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
@@ -55,10 +60,16 @@ export const login = async (req, res, next) => {
         if (!user) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
-        const auth = await compare(password,user.password);
+        
+        console.log("Password attempt:", password);
+        console.log("Hashed password:", user.password);
+
+        const auth = await compare(password, user.password);
+        console.log("Password match:", auth);
         if (!auth) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
+
 
         res.cookie('jwt', createToken(email, user._id), {
             httpOnly: true,
@@ -66,6 +77,8 @@ export const login = async (req, res, next) => {
             secure: true,
             sameSite: "None",
         });
+        console.log("Password attempt:", password);
+        console.log("Hashed password:", user.password);
 
         return res.status(201).json({
             message: 'User logged in successfully',
