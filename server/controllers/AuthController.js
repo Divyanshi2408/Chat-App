@@ -4,7 +4,6 @@ import { compare,hash } from 'bcryptjs';
 import path from 'path';
 import fs, { renameSync,unlinkSync,existsSync } from 'fs';
 
-
 const raxAge = 3 * 24 * 60 * 60 * 1000; // 1 day
 
 const createToken = (email, userId) => {
@@ -75,7 +74,7 @@ export const login = async (req, res, next) => {
                 profileSetup: user.profileSetup,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                image: user.image,
+                image: user.image || null,
                 color: user.color,
             },
         });
@@ -163,7 +162,7 @@ export const addProfileImage = async (req, res, next) => {
             return res.status(400).json({ message: 'Image file is required' });
         }
         const date =Date.now();
-        let fileName = "upload/profile" + date + req.file.originalname;
+        const fileName = `upload/profile/${Date.now()}-${req.file.originalname}`
         renameSync(req.file.path, fileName);
 
         const updateUser = await User.findByIdAndUpdate(
@@ -181,7 +180,6 @@ export const addProfileImage = async (req, res, next) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
-
 
 export const removeProfileImage = async (req, res, next) => {
     try {

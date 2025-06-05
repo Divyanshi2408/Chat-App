@@ -149,7 +149,7 @@ const handleFileInputClick = () =>{
             <Avatar className="w-32 h-32 md:w-48 md:h-48 bg-gray-500 rounded-full overflow-hidden">
               {image ? (
                 <AvatarImage
-                  src={image}
+                  src={`${HOST}/${image}`} 
                   alt="Avatar"
                   onError={() => setImage(null)}
                   className="w-full h-full object-cover bg-black"

@@ -26,7 +26,8 @@ allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Credenti
 
 
 // Serve static files
-app.use('/uploads/profile', express.static(path.join(__dirname, 'uploads/profile')));
+// app.use('/uploads/profile', express.static(path.join(__dirname, 'uploads/profile')));
+app.use('/upload', express.static(path.join(__dirname, 'upload')));
 
 
 app.use("/api/auth", authRoutes);
