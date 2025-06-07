@@ -27,7 +27,7 @@ const HOST ='http://localhost:5000';
       setSelectedColor(userInfo.color ?? 0);
     }
     if (userInfo.image) {
-      const imagePath = userInfo.image ? `${HOST}/${userInfo.image}` : null;
+      const imagePath = userInfo.image ? `${HOST}/${userInfo.image}` : '';
     }
    }, [userInfo]);
 
