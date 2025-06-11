@@ -5,7 +5,9 @@ import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { Users } from "lucide-react";
 
 const Sidebar = () => {
-  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
+  // const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
+  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading, unreadCounts } = useChatStore();
+
 
   const { onlineUsers } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
@@ -65,6 +67,13 @@ const Sidebar = () => {
                   rounded-full ring-2 ring-zinc-900"
                 />
               )}
+              {unreadCounts[user._id] > 0 && selectedUser?._id !== user._id && (
+    <span
+      className="absolute -top-1 -right-1 text-[10px] bg-red-500 text-white px-1.5 py-[2px] rounded-full"
+    >
+      {unreadCounts[user._id]}
+    </span>
+  )}
             </div>
 
             {/* User info - only visible on larger screens */}
@@ -74,6 +83,7 @@ const Sidebar = () => {
                 {onlineUsers.includes(user._id) ? "Online" : "Offline"}
               </div>
             </div>
+            
           </button>
         ))}
 
