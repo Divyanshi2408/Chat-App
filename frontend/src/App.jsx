@@ -13,16 +13,37 @@ import { useEffect } from "react";
 
 import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
+import { useChatStore } from "./store/useChatStore";
 
 const App = () => {
-  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
-  const { theme } = useThemeStore();
+const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
+const { theme } = useThemeStore();
+const setUnreadCounts = useChatStore((state) => state.setUnreadCounts);
+
 
   console.log({ onlineUsers });
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+  
+useEffect(() => {
+  if (!authUser) return;
+
+  const socket = useAuthStore.getState().socket;
+
+  if (socket) {
+    socket.on("unreadMessageCounts", (counts) => {
+      setUnreadCounts(counts); // update store with counts
+    });
+  }
+
+  return () => {
+    if (socket) {
+      socket.off("unreadMessageCounts");
+    }
+  };
+}, [authUser]);
 
   console.log({ authUser });
 

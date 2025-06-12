@@ -16,6 +16,7 @@ export const getUsersForSidebar = async (req, res) => {
   }
 };
 
+
 export const getMessages = async (req, res) => {
   try {
     const { id: userToChatId } = req.params;
@@ -27,6 +28,12 @@ export const getMessages = async (req, res) => {
         { senderId: userToChatId, receiverId: myId },
       ],
     });
+
+    // ✅ Mark messages sent to me as read
+    await Message.updateMany(
+      { senderId: userToChatId, receiverId: myId, read: false },
+      { $set: { read: true } }
+    );
 
     res.status(200).json(messages);
   } catch (error) {
@@ -53,6 +60,7 @@ export const sendMessage = async (req, res) => {
       receiverId,
       text,
       image: imageUrl,
+      read: false,
     });
 
     await newMessage.save();
@@ -65,6 +73,33 @@ export const sendMessage = async (req, res) => {
     res.status(201).json(newMessage);
   } catch (error) {
     console.log("Error in sendMessage controller: ", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// GET /messages/unread-counts
+export const getUnreadCounts = async (req, res) => {
+  try {
+    const myId = req.user._id;
+
+    const unreadMessages = await Message.aggregate([
+      { $match: { receiverId: myId, read: false } },
+      {
+        $group: {
+          _id: "$senderId",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const counts = {};
+    unreadMessages.forEach((item) => {
+      counts[item._id] = item.count;
+    });
+
+    res.status(200).json(counts);
+  } catch (error) {
+    console.error("Error in getUnreadCounts:", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
